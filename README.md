@@ -1,0 +1,2 @@
+# EffectBot Discord bot
+## Overview
