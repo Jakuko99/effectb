@@ -8,6 +8,7 @@ import asyncio
 import praw
 import os
 from dotenv import load_dotenv
+import pyttsx3
 
 OStype = os.name
 
@@ -194,6 +195,33 @@ async def stop(ctx):
         await ctx.message.add_reaction('\U000023F9')
     else:
         await ctx.send("The bot is not playing anything at the moment.")
+@bot.command(name='say', help='Says text using tts, put your text in quotes')
+async def say(ctx,message):
+    engine = pyttsx3.init()
+    engine.setProperty('rate',180)
+    engine.save_to_file(message, 'tts.mp3')
+    engine.runAndWait()
+    engine.stop()
+    try:
+        user = ctx.message.author
+        vc = user.voice.channel
+        voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+        if voice == None:
+            await vc.connect()
+        server = ctx.message.guild
+        voice_channel = server.voice_client
+    except:
+        await ctx.send("The bot is not connected to a voice channel.")
+    else:
+        filename = "tts.mp3"
+        if OStype == "nt":
+                voice_channel.play(discord.FFmpegPCMAudio(executable="ffmpeg.exe", source=filename)) #windows play function
+        elif OStype == "posix":
+            voice_channel.play(discord.FFmpegPCMAudio(filename)) #linux play function
+        embed = discord.Embed(title="Speaking message:", description=message, color = discord.Color.green())
+        #embed.set_footer(icon_url= ctx.author.avatar_url, text= f"Requestested by {ctx.author.name}")
+    await ctx.message.add_reaction('\U0001f4ac')
+    await ctx.send(embed = embed)
 
 quotes= loadFile("quotes.txt")
 bot.run(TOKEN)

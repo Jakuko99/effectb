@@ -3,3 +3,7 @@ reddit_.py
 discord.log
 .log
 .env
+__pycache__/
+.vscode/
+tts.py
+tts.mp3
