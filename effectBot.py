@@ -1,3 +1,4 @@
+from discord import guild, message
 from discord.ext import commands
 import ffmpeg
 import logging
@@ -222,6 +223,16 @@ async def say(ctx,message):
         #embed.set_footer(icon_url= ctx.author.avatar_url, text= f"Requestested by {ctx.author.name}")
     await ctx.message.add_reaction('\U0001f4ac')
     await ctx.send(embed = embed)
+
+# @bot.command(aliases=['members', 'memb'], help = 'Get members in current voice channel')  #Not working to get id of voice channel
+# async def membs(ctx):
+#     if ctx.author.voice and ctx.author.voice.channel:
+#         channelName = ctx.author.voice.channel
+#     else:
+#         await ctx.send("You are not connected to a voice channel")
+#     voice_channel = discord.utils.get(ctx.message.guild.channels, name=channelName, type=discord.ChannelType.voice)
+#     voice_channel = discord.utils.get(message.Guild.members, name = channelName)
+#     await ctx.send(voice_channel)
 
 quotes= loadFile("quotes.txt")
 bot.run(TOKEN)
