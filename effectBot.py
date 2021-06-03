@@ -79,18 +79,6 @@ async def on_ready():   #bot ready console message, prints servers where the bot
 
 @bot.command(name="funny", help="returns funny quote, test command") #test command for messages
 async def nine_nine(ctx):
-    # quotes = [
-    #     'Nespadol som, len som mužne napadol podlahu.',
-    #     'Nie som lenivý, len mám silnú motiváciu nerobiť nič.',
-    #     'Smejte sa svojím problémom, ostatní sa im smejú tiež.',
-    #     'Však vy sa dosmejete, keď sa prestanete smiať.',
-    #     'Pokiaľ budú kakaové bôby rásť na stromoch, je pre mňa čokoláda ovocie.',
-    #     'Sú dva typy ľudí. Tí, ktorí umývajú riad, lebo práve dojedli a tí, ktorí umývajú riad, lebo práve sa chystajú jesť',
-    #     'Multitasking - umenie pokaziť viac vecí naraz!',
-    #     'Milujem cestovanie! Zvlášť keď cestujú ľudia, čo mi lezú na nervy.',
-    #     'Ranné vtáča prezíva celý deň.',
-    #     'Pozor! Chyba užívateľa. Vymeňte užívateľa a stlačte ľubovoľnú klávesu.'
-    # ]
     response = random.choice(quotes)
     await ctx.send(response)
 
