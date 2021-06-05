@@ -104,7 +104,7 @@ async def join(ctx):
     channel = ctx.author.voice.channel
     await ctx.message.add_reaction('\U0001F596')
     await channel.connect()
-@bot.command(aliases=['disconnect', 'dc'], help="disconnects bot from voice channel")  #leave voice channel, uses aliases for command
+@bot.command(name="disconnect", aliases=['dc'], help="disconnects bot from voice channel")  #leave voice channel, uses aliases for command
 async def leave(ctx):
     await ctx.message.add_reaction('\U0001F44B')
     await ctx.voice_client.disconnect()
@@ -123,7 +123,7 @@ async def play(ctx,url):
         await ctx.send("The bot is not connected to a voice channel.")
     else:
         async with ctx.typing():
-            filename = await YTDLSource.from_url(url, loop=bot.loop)
+            filename = await YTDLSource.from_url(url, loop=bot.loop) #voice.play(discord.FFMPegPCMAudio(file), afted = playlist)
             if OStype == "nt":
                 voice_channel.play(discord.FFmpegPCMAudio(executable="ffmpeg.exe", source=filename)) #windows play function
             elif OStype == "posix":

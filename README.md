@@ -18,7 +18,8 @@ REDDIT_PASS=REDDIT_PASSWORD
 [ ] Add Linux alternative for TTS </br>
 [ ] Create queue system for audio </br>
 [ ] Fix youtube-dl issue </br>
-[ ] Direct url playback
+[ ] Direct url playback </br>
+[ ] Separate players for music and TTS
 
 ## Commands
 Default bot prefix is **!** (exclamation mark), in the future there may be command to change that.

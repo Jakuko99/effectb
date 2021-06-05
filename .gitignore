@@ -6,4 +6,6 @@ discord.log
 __pycache__/
 .vscode/
 tts.py
-tts.mp3
+*.mp3
+secret.gif
+!test_file.mp3
