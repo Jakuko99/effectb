@@ -1,7 +1,7 @@
 # EffectBot Discord bot
 ## Overview
 ### Basic functionality
-My aim for this bot is to make it multifuncional. Current version is capable of sending posts from reddit, playing music from youtube (though this doesn't work currently), true TTS messages, funny quotes and more to come later. I am also planning to add some mini game like Tic-Tac-Toe or something similar.
+My aim is to make this bot multifuncional. Current version is capable of sending posts from reddit, playing music from youtube (though this doesn't work currently), true TTS messages, funny quotes and more to come later. I am also planning to add some mini game like Tic-Tac-Toe or something similar.
 
 ### Running the bot
 Download the files and open them in your python code editor. Don't forget to install libraries from `requirements.txt`. You will also need to create .env file in code directory to be able to run this code, this file should be in this format:
