@@ -17,6 +17,7 @@ REDDIT_PASS=REDDIT_PASSWORD
 [ ] Fetch list of members currently in voice channel </br>
 [ ] Add Linux alternative for TTS </br>
 [ ] Create queue system for audio </br>
+[ ] Fix youtube-dl issue
 
 ## Commands
 Default bot prefix is **!** (exclamation mark), in the future there may be command to change that.
