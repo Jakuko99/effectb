@@ -4,7 +4,7 @@
 My aim is to make this bot multifuncional. Current version is capable of sending posts from reddit, playing music from youtube (though this doesn't work currently), true TTS messages, funny quotes and more to come later. I am also planning to add some mini game like Tic-Tac-Toe or something similar.
 
 ### Running the bot
-Download the files and open them in your python code editor. Don't forget to install libraries from `requirements.txt`. You will also need to create .env file in code directory to be able to run this code, this file should be in this format:
+Download the files and open them in your python code editor. Don't forget to install libraries from `requirements.txt` using `pip3 install -r requirements.txt`. You will also need to create .env file in code directory to be able to run this code, this file should be in this format:
 ```
 BOT_TOKEN=DISCORD_BOT_TOKEN
 REDDIT_ID=REDDIT_APPLICATION_ID
@@ -12,14 +12,16 @@ REDDIT_SECRET=REDDIT_SECRET
 REDDIT_NAME=REDDIT_USERNAME
 REDDIT_PASS=REDDIT_PASSWORD
 ``` 
+### TTS Commands
+Currently TTS works best on Windows hosts. It can work on Linux(Ubuntu, etc.), but the voices there are not that good and for some unknown reason the bot crashes sometimes after playback. Still trying to find a way how to use TTS, while bot is running on hosting service instead of locally.
 
 ## To Do
 [ ] Fetch list of members currently in voice channel </br>
-[ ] Add Linux alternative for TTS </br>
+[x] Add Linux alternative for TTS (works, but it makes bot freeze sometimes) </br>
 [ ] Create queue system for audio </br>
 [ ] Fix youtube-dl issue </br>
 [ ] Direct url playback </br>
-[ ] Separate players for music and TTS
+[ ] Separate players for music and TTS </br>
 
 ## Commands
 Default bot prefix is **!** (exclamation mark), in the future there may be command to change that.
