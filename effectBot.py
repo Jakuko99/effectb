@@ -8,11 +8,12 @@ import asyncio
 import praw
 import os
 from dotenv import load_dotenv
-import pyttsx3
 
 OStype = os.name
-engine = pyttsx3.init() #works on linux as well, but only if it has tts voices installed
-voices = engine.getProperty('voices') #get installed voices, pyttsx3 works only on Windows
+if OStype == "nt":
+    import pyttsx3
+    engine = pyttsx3.init() #works on linux as well, but only if it has tts voices installed
+    voices = engine.getProperty('voices') #get installed voices, pyttsx3 works only on Windows
 
 load_dotenv()
 reddit = praw.Reddit(client_id=os.getenv("REDDIT_ID"), client_secret=os.getenv("REDDIT_SECRET"), username=os.getenv("REDDIT_NAME"), password=os.getenv("REDDIT_PASS"), user_agent="effectbot", check_for_async=False)
@@ -188,37 +189,40 @@ async def stop(ctx):
         await ctx.send("The bot is not playing anything at the moment.")
 @bot.command(name='say', help='Says text using tts, put your text in quotes')
 async def say(ctx,message,voice="m"):
-    engine.setProperty('rate',180) #say message a little bit slower, default setting is 200
     if OStype == "nt":
-        if voice.lower() == "f":
-            engine.setProperty('voice', voices[1].id) #change voice to MS Zira
-        elif voice.lower() == "m":
-            engine.setProperty('voice', voices[0].id) #change voice to MS David, default setting
-    elif OStype == "posix": #tested on Ubuntu, all voices are the same, but the bot freezes afted playback sometimes
-        engine.setProperty('voice', voices[0].id)
-    engine.save_to_file(message, 'tts.mp3') #save message output to audio file, TODO: add queue for audio tracks
-    engine.runAndWait()
-    engine.stop() #not neccessary to stop engine each time
-    try:
-        user = ctx.message.author
-        vc = user.voice.channel
-        voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
-        if voice == None:
-            await vc.connect()
-        server = ctx.message.guild
-        voice_channel = server.voice_client
-    except:
-        await ctx.send("The bot is not connected to a voice channel.")
-    else:
-        filename = "tts.mp3"
+        engine.setProperty('rate',180) #say message a little bit slower, default setting is 200
         if OStype == "nt":
-            voice_channel.play(discord.FFmpegPCMAudio(executable="ffmpeg.exe", source=filename)) #windows play function
-        elif OStype == "posix":
-            voice_channel.play(discord.FFmpegPCMAudio(filename)) #linux play function
-        embed = discord.Embed(title="Speaking message:", description=message, color = discord.Color.green())
-    #embed.set_footer(icon_url= ctx.author.avatar_url, text= f"Requestested by {ctx.author.name}")
-    await ctx.message.add_reaction('\U0001f4ac')
-    await ctx.send(embed = embed)
+            if voice.lower() == "f":
+                engine.setProperty('voice', voices[1].id) #change voice to MS Zira
+            elif voice.lower() == "m":
+                engine.setProperty('voice', voices[0].id) #change voice to MS David, default setting
+        elif OStype == "posix": #tested on Ubuntu, all voices are the same, but the bot freezes afted playback sometimes
+            engine.setProperty('voice', voices[0].id)
+        engine.save_to_file(message, 'tts.mp3') #save message output to audio file, TODO: add queue for audio tracks
+        engine.runAndWait()
+        engine.stop() #not neccessary to stop engine each time
+        try:
+            user = ctx.message.author
+            vc = user.voice.channel
+            voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+            if voice == None:
+                await vc.connect()
+            server = ctx.message.guild
+            voice_channel = server.voice_client
+        except:
+            await ctx.send("The bot is not connected to a voice channel.")
+        else:
+            filename = "tts.mp3"
+            if OStype == "nt":
+                voice_channel.play(discord.FFmpegPCMAudio(executable="ffmpeg.exe", source=filename)) #windows play function
+            elif OStype == "posix":
+                voice_channel.play(discord.FFmpegPCMAudio(filename)) #linux play function
+            embed = discord.Embed(title="Speaking message:", description=message, color = discord.Color.green())
+        #embed.set_footer(icon_url= ctx.author.avatar_url, text= f"Requestested by {ctx.author.name}")
+        await ctx.message.add_reaction('\U0001f4ac')
+        await ctx.send(embed = embed)
+    else:
+        await ctx.send("TTS is not supported on Linux yet.")
 
 # @bot.command(aliases=['members', 'memb'], help = 'Get members in current voice channel')  #Not working to get id of voice channel
 # async def membs(ctx):
@@ -231,4 +235,5 @@ async def say(ctx,message,voice="m"):
 #     await ctx.send(voice_channel)
 
 quotes= loadFile("quotes.txt")
+#bot.load_extension("Cogs.Audio")
 bot.run(TOKEN)
