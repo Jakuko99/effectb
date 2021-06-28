@@ -1,0 +1,49 @@
+from discord.ext import commands
+import discord
+import os
+from discord.ext.commands.core import check
+from dotenv import load_dotenv
+import apraw
+import asyncio
+import random
+
+def loadFile(file):
+    f = open(file)
+    content = []
+    for line in f.readlines():
+        content.append(line.strip())
+    return content
+
+load_dotenv()
+reddit = apraw.Reddit(client_id=os.getenv("REDDIT_ID"), client_secret=os.getenv("REDDIT_SECRET"), username=os.getenv("REDDIT_NAME"), password=os.getenv("REDDIT_PASS"), user_agent="effectbot")
+quotes = []
+quotes= loadFile("quotes.txt")
+
+class Chat(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.command(name="meme", help="displays funny meme from Reddit") #meme module with Praw
+    async def meme(self,ctx,subred = "memes"):
+        sub = await reddit.subreddit(subred) #TODO fix weird subreddit bug
+        all_subs = []
+        top = sub.top(limit=50)
+        async for submission in top:
+            all_subs.append(submission)
+        random_sub = random.choice(all_subs)
+        try:    #some posts don't have post_hint attribute
+            if not random_sub.post_hint == "image":
+                random_sub = random.choice(all_subs)    #generate new random post
+        except:
+            random_sub = random.choice(all_subs) #generate new random post, if there is no post_hint attribute
+        em = discord.Embed(title=random_sub.title, color=discord.Color.green())
+        em.set_image(url = random_sub.url)
+        await ctx.send(embed = em) 
+    
+    @commands.command(name="funny", help="returns funny quote, test command") #test command for messages
+    async def nine_nine(self,ctx):
+        response = random.choice(quotes)
+        await ctx.send(response)
+
+def setup(bot):
+    bot.add_cog(Chat(bot))

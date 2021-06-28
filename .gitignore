@@ -5,7 +5,10 @@ discord.log
 .env
 __pycache__/
 .vscode/
-tts.py
+tts_test.py
 *.mp3
 secret.gif
 !test_file.mp3
+Cogs/__pycache__/
+tts_input.py
+test.py

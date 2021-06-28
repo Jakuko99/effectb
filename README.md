@@ -15,8 +15,14 @@ REDDIT_PASS=REDDIT_PASSWORD
 ### TTS Commands
 Currently TTS works best on Windows hosts. It can work on Linux(Ubuntu, etc.), but the voices there are not that good and for some unknown reason the bot crashes sometimes after playback. Still trying to find a way how to use TTS, while bot is running on hosting service instead of locally.
 
+## Cogs
+Bot's commands are split to four categories based what is their purpose. Now using the command `!help` will show commands in their respective categories:
+- Chat - used for message based commands
+- Audio - commands like playing audio from YouTube URL
+- TTS - Text-to-Speech messages (they only work if the bot is running on Windows for now)
+- Administrative - protected set of commands used to manage cogs
+
 ## To Do
-[ ] Fetch list of members currently in voice channel </br>
 [x] Add Linux alternative for TTS (works, but it makes bot freeze sometimes) </br>
 [ ] Create queue system for audio </br>
 [ ] Fix youtube-dl issue </br>
