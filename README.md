@@ -1,5 +1,6 @@
 # EffectBot Discord bot
 ## Overview
+You can invite bot to your server using this [link](https://top.gg/bot/821641151613894706).
 ### Basic functionality
 My aim is to make this bot multifuncional. Current version is capable of sending posts from reddit, playing music from youtube (though this doesn't work currently), true TTS messages, funny quotes and more to come later. I am also planning to add some mini game like Tic-Tac-Toe or something similar.
 
