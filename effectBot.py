@@ -31,7 +31,7 @@ async def on_guild_join(guild): #custom bot join message
      if guild.system_channel: #TODO: add alternative if can't send in system channel
         embed=discord.Embed(title="Thanks for adding me to your server!", description="My default prefix is **!**. Type !help to get started, I am still under development, so don't worry when I'm offline.", color=discord.Color.green())
         embed.set_thumbnail(url="https://i.imgur.com/wcuNoz2.jpg?1")
-        embed.add_field(name="You can find support and updates here:", value="https://discord.gg/UNv2TJ4s", inline=False)
+        embed.add_field(name="You can find support and updates here:", value="https://discord.gg/Dx3JaJfkcD", inline=False) #always check if there is correct invite link
         await guild.system_channel.send(embed=embed)
 
 bot.load_extension("Cogs.Audio") #load audio commands (pl, play)
