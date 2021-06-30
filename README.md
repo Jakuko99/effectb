@@ -35,6 +35,7 @@ Default bot prefix is **!** (exclamation mark), in the future there may be comma
 | Command | Usage | Parameters | Description |
 | ----------- | ----------- | ----------- | ----------- |
 | help | - | none | Returns list of all bot's commands |
+|invite| - | none | Sends invite to bot's support server|
 | funny | - |  none | Randomly chooses one funny quote from file quotes.txt |
 | meme | meme [subreddit] | subreddit | Fetches image post from chosen subreddit of chooses one from top posts on meme subreddit. |
 | join | - | none | Connects bot to the voice channel sender of the message is in |

@@ -18,5 +18,13 @@ class Utility(commands.Cog):
         await ctx.message.add_reaction('\U0001F44B')
         await ctx.voice_client.disconnect()
 
+    @commands.command(name="invite", help="sends invite link to bot's support server")
+    async def invite(self, ctx):
+        embed = discord.Embed(title="Join bot's support server",
+        description="https://discord.gg/Dx3JaJfkcD",
+        color = discord.Color.green())
+        embed.set_thumbnail(url="https://i.imgur.com/wcuNoz2.jpg?1")
+        await ctx.send(embed=embed)
+
 def setup(bot):
     bot.add_cog(Utility(bot))

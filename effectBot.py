@@ -26,6 +26,14 @@ async def on_ready():   #bot ready console message, prints servers where the bot
         servers.append(guild.name)
     print("Bot is in these servers:",servers)
 
+@bot.event
+async def on_guild_join(guild): #custom bot join message
+     if guild.system_channel: #TODO: add alternative if can't send in system channel
+        embed=discord.Embed(title="Thanks for adding me to your server!", description="My default prefix is **!**. Type !help to get started, I am still under development, so don't worry when I'm offline.", color=discord.Color.green())
+        embed.set_thumbnail(url="https://i.imgur.com/wcuNoz2.jpg?1")
+        embed.add_field(name="You can find support and updates here:", value="https://discord.gg/UNv2TJ4s", inline=False)
+        await guild.system_channel.send(embed=embed)
+
 bot.load_extension("Cogs.Audio") #load audio commands (pl, play)
 bot.load_extension("Cogs.Utility") #commands for joining and disconnecting from VCs
 bot.load_extension("Cogs.Chat") #funny and meme comands
