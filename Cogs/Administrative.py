@@ -1,5 +1,3 @@
-from discord import embeds
-from discord.colour import Color
 from discord.ext import commands
 import discord
 import os
@@ -64,5 +62,33 @@ class Administrative(commands.Cog):
             await ctx.message.add_reaction('\U000026A0')
             await ctx.send(embed=self.wrong) 
 
+    @commands.command(name="cogs")
+    async def cogs(self, ctx, action, module, otp):
+        if str(self.key.now()) == str(otp):
+            if action == "load":
+                try:
+                    self.bot.load_extension(module)
+                except Exception as ex:
+                    await ctx.send(f"Loading {module} failed, {ex}")
+                else:
+                    await ctx.send(f"{module} loaded successfully!")
+            elif action == "unload":
+                try:
+                    self.bot.unload_extension(module)
+                except Exception as ex:
+                    await ctx.send(f"Unloading {module} failed, {ex}")
+                else:
+                    await ctx.send(f"{module} unloaded successfully!")
+            elif action == "reload":
+                try:
+                    self.bot.reload_extension(module)
+                except Exception as ex:
+                    await ctx.send(f"Reloading {module} failed, {ex}")
+                else:
+                    await ctx.send(f"{module} reloaded successfully!")
+        else:
+            await ctx.message.add_reaction('\U000026A0')
+            await ctx.send(embed=self.wrong)
+    
 def setup(bot):
     bot.add_cog(Administrative(bot))

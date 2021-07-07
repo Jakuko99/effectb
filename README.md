@@ -1,4 +1,6 @@
 # EffectBot Discord bot
+[![Discord Bots](https://top.gg/api/widget/status/821641151613894706.svg)](https://top.gg/bot/821641151613894706)
+
 ## Overview
 You can invite bot to your server using this [link](https://top.gg/bot/821641151613894706).
 ### Basic functionality
