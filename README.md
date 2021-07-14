@@ -3,6 +3,7 @@
 
 ## Overview
 You can invite bot to your server using this [link](https://top.gg/bot/821641151613894706).
+
 ### Basic functionality
 My aim is to make this bot multifuncional. Current version is capable of sending posts from reddit, playing music from youtube (though this doesn't work currently), true TTS messages, funny quotes and more to come later. I am also planning to add some mini game like Tic-Tac-Toe or something similar.
 
@@ -16,7 +17,7 @@ REDDIT_NAME=REDDIT_USERNAME
 REDDIT_PASS=REDDIT_PASSWORD
 ``` 
 ### TTS Commands
-Currently TTS works best on Windows hosts. It can work on Linux(Ubuntu, etc.), but the voices there are not that good and for some unknown reason the bot crashes sometimes after playback. Still trying to find a way how to use TTS, while bot is running on hosting service instead of locally.
+Currently TTS works only on Windows hosts. It can work on Linux(Ubuntu, etc.), but the voices there are not that good and for some unknown reason the bot crashes sometimes after playback. Still trying to find a way how to use TTS, while bot is running on hosting service instead of locally.
 
 ## Cogs
 Bot's commands are split to four categories based what is their purpose. Now using the command `!help` will show commands in their respective categories:
@@ -28,9 +29,9 @@ Bot's commands are split to four categories based what is their purpose. Now usi
 ## To Do
 [x] Add Linux alternative for TTS (works, but it makes bot freeze sometimes) </br>
 [ ] Create queue system for audio </br>
-[ ] Fix youtube-dl issue </br>
+[x] Fix youtube-dl issue </br>
 [ ] Direct url playback </br>
-[ ] Separate players for music and TTS </br>
+[ ] Fix IMDb actor command </br>
 
 ## Commands
 Default bot prefix is **!** (exclamation mark), in the future there may be command to change that.
@@ -47,4 +48,6 @@ Default bot prefix is **!** (exclamation mark), in the future there may be comma
 | pause | - | none | Pauses current audio playback |
 | resume | - | none | Resumes audio playback |
 | stop | - | none | Completely stops audio playback |
-| say | say [message] [voice] |message, voice | Translates given message to TTS audio file and plays it. Voice parameter is optional, but defaults to m (male voice), other options is f (female voice). Message must be in quotes (""), otherwise it won't function properly. |
+| search | search [movie/series] | name | Searches IMDb for movie or series with that name and returns results |
+| movie | movie [movie/series] | name | Returns overview of movie or series |
+| say | say [message] |message | Translates given message to TTS audio file and plays it. |

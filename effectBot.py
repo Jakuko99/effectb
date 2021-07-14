@@ -38,6 +38,7 @@ bot.load_extension("Cogs.Audio") #load audio commands (pl, play)
 bot.load_extension("Cogs.Utility") #commands for joining and disconnecting from VCs
 bot.load_extension("Cogs.Chat") #funny and meme comands
 bot.load_extension("Cogs.Administrative") #protected set of commands
+bot.load_extension("Cogs.IMDb") #load IMDb module
 
 if OStype == "nt":
     bot.load_extension("Cogs.TTS") #only load on Windows for now

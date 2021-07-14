@@ -2,7 +2,7 @@ from discord.ext import commands
 import discord
 import pyttsx3
 import os
-
+from tools import Tools
 OStype = os.name
 
 class TTS(commands.Cog):
@@ -10,14 +10,11 @@ class TTS(commands.Cog):
         self.bot = bot
         self.engine = pyttsx3.init() #works on linux as well, but only if it has tts voices installed
         self.voices = self.engine.getProperty('voices') #get installed voices, pyttsx3 works only on Windows
+        self.tools = Tools()
 
     @commands.command(name='say', help='Says text using tts, put your text in quotes')
-    async def say(self,ctx,message,voice="m"):
-        self.engine.setProperty('rate',180) #say message a little bit slower, default setting is 200
-        if voice.lower() == "f":
-            self.engine.setProperty('voice', self.voices[1].id) #change voice to MS Zira
-        elif voice.lower() == "m":
-            self.engine.setProperty('voice', self.voices[0].id) #change voice to MS David, default setting
+    async def say(self,ctx,*data):
+        message = self.tools.tupleUnpack(data)
         self.engine.save_to_file(message, 'tts.mp3') #save message output to audio file, TODO: add queue for audio tracks
         self.engine.runAndWait()
         #self.engine.stop() #not neccessary to stop engine each time
