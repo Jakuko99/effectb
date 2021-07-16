@@ -11,7 +11,8 @@ class Tools:
     def shortenText(self, string, n): #return first n sentences from string
         first = string.find(".")
         for _ in range(n - 1):
-            first = string.find(".", first+1)
+            if not string.find(".", first + 1) == -1:
+                first = string.find(".", first + 1)
         return f"{string[:first-len(string)]}."
 
     def tupleUnpack(self, tup):
