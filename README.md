@@ -49,5 +49,6 @@ Default bot prefix is **!** (exclamation mark), in the future there may be comma
 | resume | - | none | Resumes audio playback |
 | stop | - | none | Completely stops audio playback |
 | search | search [movie/series] | name | Searches IMDb for movie or series with that name and returns results |
-| movie | movie [movie/series] | name | Returns overview of movie or series |
+| movie | movie [movie/series] | title | Returns overview of movie or series |
+| actor | actor [name] | name | Sends basic info about actor or actress with their filmography |
 | say | say [message] |message | Translates given message to TTS audio file and plays it. |

@@ -24,7 +24,7 @@ class Imdb(commands.Cog):
         await ctx.message.add_reaction('\U0001F50D')
         await ctx.send(embed=Search)
     
-    @commands.command(name="movie", help="prints information about searched movie or series")
+    @commands.command(name="movie", help="sends info about movie or series")
     async def movie(self,ctx,*data):
         movie = self.tools.tupleUnpack(data)
         async with ctx.typing():
@@ -71,35 +71,35 @@ class Imdb(commands.Cog):
         await ctx.message.add_reaction('\U0001F39E')
         await ctx.send(embed = movieEmbed)
     
-    # @commands.command(name="actor", help="get information about actor or actress") #TODO: fix biography and filmography
-    # async def actor(self, ctx, *data):
-    #     actor = self.tools.tupleUnpack(data)
-    #     async with ctx.typing():
-    #         person = self.imdb.search_person(actor)
-    #         content = person[0]
-    #         self.imdb.update(content, info= ['biography'])
-    #         self.imdb.update(content, info= ['filmography'])
-    #         if 'headshot' in content:
-    #             url = content['full-size headshot']
-    #         else:
-    #             url = "https://i.imgur.com/jQgjBgO.png" #if something goes wrong
-    #         bio = self.tools.shortenText(content['biography'][0], 4)
-    #         if len(bio) > 4000:
-    #             bio = bio[:4000-len(bio)]
-    #         person = discord.Embed(title=content['name'], 
-    #                             description=bio,
-    #                             url = f"https://imdb.com/name/nm{content.personID}",
-    #                             color = discord.Color.green())
-    #         if 'birth date' in content:
-    #             person.add_field(name="Born", value=self.tools.formatDate(content['birth date']), inline=True)
-    #         if 'actor' in content:
-    #             person.add_field(name= "Filmography", value= self.tools.partialJoin(content['filmography']['actor'], 10))
-    #         elif 'actress' in content:
-    #             person.add_field(name= "Filmography", value= self.tools.partialJoin(content['filmography']['actress'], 10))
-    #         person.set_thumbnail(url=url)
-    #         person.set_footer(icon_url= ctx.author.avatar_url, text= f"Requested by {ctx.author.name}")
-    #     await ctx.message.add_reaction('\U0001f3ad')
-    #     await ctx.send(embed=person)
+    @commands.command(name="actor", help="sends info about actor or actress") #TODO: fix biography and filmography
+    async def actor(self, ctx, *data):
+        actor = self.tools.tupleUnpack(data)
+        async with ctx.typing():
+            person = self.imdb.search_person(actor)
+            content = person[0]
+            self.imdb.update(content, info= ['biography'])
+            self.imdb.update(content, info= ['filmography'])
+            if 'headshot' in content:
+                url = content['full-size headshot']
+            else:
+                url = "https://i.imgur.com/jQgjBgO.png" #if something goes wrong
+            bio = self.tools.shortenText(content['biography'][0], 4)
+            if len(bio) > 4000:
+                bio = bio[:4000-len(bio)]
+            person = discord.Embed(title=content['name'], 
+                                description=bio,
+                                url = f"https://imdb.com/name/nm{content.personID}",
+                                color = discord.Color.green())
+            if 'birth date' in content:
+                person.add_field(name="Born", value=self.tools.formatDate(content['birth date']), inline=True)
+            if 'actor' in content['filmography']:
+                person.add_field(name= "Filmography", value= self.tools.processFilmography(content['filmography']['actor'], 10))
+            elif 'actress' in content['filmography']:
+                person.add_field(name= "Filmography", value= self.tools.processFilmography(content['filmography']['actress'], 10))
+            person.set_thumbnail(url=url)
+            person.set_footer(icon_url= ctx.author.avatar_url, text= f"Requested by {ctx.author.name}")
+        await ctx.message.add_reaction('\U0001f3ad')
+        await ctx.send(embed=person)
 
 def setup(bot):
     bot.add_cog(Imdb(bot))

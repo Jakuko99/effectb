@@ -36,6 +36,19 @@ class Tools:
             if i >= n:
                 break
         return self.output[:-2]
+    
+    def processFilmography(self, list, n):
+        self.output = ""
+        i = 0
+        for item in list:
+            if 'year' in item:
+                self.output += f"{item['title']} ({item['year']}), "
+            else:
+                self.output += f"{item['title'][:-3]}, "
+            i += 1
+            if i >= n:
+                break
+        return self.output[:-2]
 
     def convertTime(self, runtime):
         time = int(runtime)
