@@ -44,7 +44,7 @@ class Tools:
             if 'year' in item:
                 self.output += f"{item['title']} ({item['year']}), "
             else:
-                self.output += f"{item['title'][:-3]}, "
+                self.output += f"{item['title'].replace(' ()', '')}, "
             i += 1
             if i >= n:
                 break

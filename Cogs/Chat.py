@@ -25,20 +25,21 @@ class Chat(commands.Cog):
 
     @commands.command(name="meme", help="displays funny meme from Reddit") #meme module with Praw
     async def meme(self,ctx,subred = "memes"):
-        sub = await reddit.subreddit(subred) #TODO fix weird subreddit bug
-        all_subs = []
-        top = sub.top(limit=50)
-        async for submission in top:
-            all_subs.append(submission)
-        random_sub = random.choice(all_subs)
-        try:    #some posts don't have post_hint attribute
-            if not random_sub.post_hint == "image":
-                random_sub = random.choice(all_subs)    #generate new random post
-        except:
-            random_sub = random.choice(all_subs) #generate new random post, if there is no post_hint attribute
-        em = discord.Embed(title=random_sub.title, color=discord.Color.green())
-        em.set_image(url = random_sub.url)
-        await ctx.send(embed = em) 
+        async with ctx.typing():
+            sub = await reddit.subreddit(subred) #TODO fix weird subreddit bug
+            all_subs = []
+            top = sub.top(limit=50)
+            async for submission in top:
+                all_subs.append(submission)
+            random_sub = random.choice(all_subs)
+            try:    #some posts don't have post_hint attribute
+                if not random_sub.post_hint == "image":
+                    random_sub = random.choice(all_subs)    #generate new random post
+            except:
+                random_sub = random.choice(all_subs) #generate new random post, if there is no post_hint attribute
+            em = discord.Embed(title=random_sub.title, color=discord.Color.green())
+            em.set_image(url = random_sub.url)
+            await ctx.send(embed = em) 
     
     @commands.command(name="funny", help="returns funny quote, test command") #test command for messages
     async def nine_nine(self,ctx):

@@ -19,8 +19,9 @@ class Utility(commands.Cog):
     @commands.command(name="invite", help="sends invite link to bot's support server")
     async def invite(self, ctx):
         embed = discord.Embed(title="Join bot's support server",
-        description="https://discord.gg/Dx3JaJfkcD",
-        color = discord.Color.green())
+                              description="https://discord.gg/Dx3JaJfkcD",
+                              color = discord.Color.green())
+        embed.add_field(name="About", value="Be part of community and become tester for the bot to help me improve it and most importantly find bugs!")
         embed.set_thumbnail(url="https://i.imgur.com/wcuNoz2.jpg?1")
         await ctx.send(embed=embed)
 

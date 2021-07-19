@@ -34,6 +34,16 @@ async def on_guild_join(guild): #custom bot join message
         embed.add_field(name="You can find support and updates here:", value="https://discord.gg/Dx3JaJfkcD", inline=False) #always check if there is correct invite link
         await guild.system_channel.send(embed=embed)
 
+@bot.event
+async def on_message(ctx): #mentioning the bot sends info embed
+    if f"<@!{bot.user.id}>" in ctx.content:
+        embed = discord.Embed(title="Bot mention",
+                              description= "Bot's current prefix is **!**, customizable prefix coming soon maybe!",
+                              color = discord.Color.green())
+        embed.add_field(name="Support server", value="https://discord.gg/Dx3JaJfkcD \n Join if you found some bugs, that would be huge help for me.")
+        await ctx.channel.send(embed=embed)
+    await bot.process_commands(ctx) #get rid of bot's soft lock
+
 bot.load_extension("Cogs.Audio") #load audio commands (pl, play)
 bot.load_extension("Cogs.Utility") #commands for joining and disconnecting from VCs
 bot.load_extension("Cogs.Chat") #funny and meme comands
