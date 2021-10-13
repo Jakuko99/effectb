@@ -30,8 +30,7 @@ Bot's commands are split to four categories based what is their purpose. Now usi
 [x] Add Linux alternative for TTS (works, but it makes bot freeze sometimes) </br>
 [ ] Create queue system for audio </br>
 [x] Fix youtube-dl issue </br>
-[ ] Direct url playback </br>
-[ ] Fix IMDb actor command </br>
+[?] Direct url playback </br>
 
 ## Commands
 Default bot prefix is **!** (exclamation mark), in the future there may be command to change that.

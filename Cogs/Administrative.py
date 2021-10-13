@@ -64,6 +64,7 @@ class Administrative(commands.Cog):
 
     @commands.command(name="cogs")
     async def cogs(self, ctx, action, module, otp):
+        module = f"Cogs.{module}" #add Cogs. prefix to the command parameter
         if str(self.key.now()) == str(otp):
             if action == "load":
                 try:
@@ -86,9 +87,19 @@ class Administrative(commands.Cog):
                     await ctx.send(f"Reloading {module} failed, {ex}")
                 else:
                     await ctx.send(f"{module} reloaded successfully!")
-        else:
-            await ctx.message.add_reaction('\U000026A0')
-            await ctx.send(embed=self.wrong)
-    
+            elif action == "check": #check if given cog is loaded or not
+                try:
+                    self.bot.load_extension(module)
+                except commands.ExtensionAlreadyLoaded:
+                    await ctx.send("Cog is loaded")
+                except commands.ExtensionNotFound:
+                    await ctx.send("Cog not found")
+                else:
+                    await ctx.send("Cog is unloaded")
+                    self.bot.unload_extension(module)
+            else:
+                await ctx.message.add_reaction('\U000026A0')
+                await ctx.send(embed=self.wrong)
+
 def setup(bot):
     bot.add_cog(Administrative(bot))

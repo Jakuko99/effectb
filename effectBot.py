@@ -49,6 +49,7 @@ bot.load_extension("Cogs.Utility") #commands for joining and disconnecting from 
 bot.load_extension("Cogs.Chat") #funny and meme comands
 bot.load_extension("Cogs.Administrative") #protected set of commands
 bot.load_extension("Cogs.IMDb") #load IMDb module
+#bot.load_extension("Cogs.Components") #components cog
 
 if OStype == "nt":
     bot.load_extension("Cogs.TTS") #only load on Windows for now
