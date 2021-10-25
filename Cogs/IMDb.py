@@ -62,7 +62,10 @@ class Imdb(commands.Cog):
                                        url= f"https://imdb.com/title/tt{content.movieID}", 
                                        color=discord.Color.green())
                 movieEmbed.add_field(name="Genres", value= self.tools.joinList(content['genres']), inline= True)
-                movieEmbed.add_field(name="Rating", value=content['rating'], inline= True)
+                try:
+                    movieEmbed.add_field(name="Rating", value=content['rating'], inline= True)
+                except:
+                    movieEmbed.add_field(name="Rating", value="Not rated", inline= True)
                 movieEmbed.add_field(name="Runtime", value=self.tools.convertTime(content['runtimes'][0]), inline= True)
                 movieEmbed.add_field(name= "Writers", value= self.tools.joinList(content['writer']), inline = True)
                 movieEmbed.add_field(name="Cast", value=self.tools.partialJoin(content['cast'], 15), inline= False)
