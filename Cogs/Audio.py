@@ -1,53 +1,22 @@
-from re import A
 from discord.ext import commands
 from discord import guild,message
+from pytube import YouTube as YT, Search
+from tools import Tools
+
 import discord
-import youtube_dl
 import asyncio
 import os
 
 OStype = os.name
 
-ffmpeg_options = {
-    'options': '-vn'
-}
-ytdl_format_options = {
-    'format': 'bestaudio/best',
-    'restrictfilenames': True,
-    'noplaylist': True,
-    'nocheckcertificate': True,
-    'ignoreerrors': False,
-    'logtostderr': False,
-    'quiet': True,
-    'no_warnings': True,
-    'default_search': 'auto',
-    'source_address': '0.0.0.0' # bind to ipv4 since ipv6 addresses cause issues sometimes
-}
-ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
-
-class YTDLSource(discord.PCMVolumeTransformer):
-    def __init__(self, source, *, data, volume=0.5):
-        super().__init__(source, volume)
-        self.data = data
-        self.title = data.get('title')
-        self.url = ""
-
-    @classmethod
-    async def from_url(cls, url, *, loop=None, stream=False):
-        loop = loop or asyncio.get_event_loop()
-        data = await loop.run_in_executor(None, lambda: ytdl.extract_info(url, download=not stream))
-        if 'entries' in data:
-            # take first item from a playlist
-            data = data['entries'][0]
-        filename = data['title'] if stream else ytdl.prepare_filename(data)
-        return filename
-
 class Audio(commands.Cog):
     def __init__(self, bot):
            self.bot = bot
+           self.tools = Tools()
 
     @commands.command(name="play", help="plays audio form URL")
-    async def play(self,ctx,url):
+    async def play(self,ctx,*data):
+        url = self.tools.tupleUnpack(data)
         try:
             user = ctx.message.author
             vc = user.voice.channel
@@ -60,16 +29,23 @@ class Audio(commands.Cog):
             await ctx.send("The bot is not connected to a voice channel.")
         else:
             async with ctx.typing():
-                filename = await YTDLSource.from_url(url, loop=self.bot.loop) #voice.play(discord.FFMPegPCMAudio(file), afted = playlist)
+                Filename = "downloaded.mp3"
+                if "http" in url:
+                    yt = YT(url)
+                    stream = yt.streams.get_by_itag(140)
+                    stream.download(filename=Filename)
+                else:
+                    Yt = Search(url)
+                    stream= Yt.results[0].streams.get_by_itag(140)
+                    stream.download(filename=Filename)
+                    yt = Yt.results[0]
+                
                 if OStype == "nt":
-                    voice_channel.play(discord.FFmpegPCMAudio(executable="ffmpeg.exe", source=filename)) #windows play function
+                    voice_channel.play(discord.FFmpegPCMAudio(executable="ffmpeg.exe", source=Filename)) #windows play function
                 elif OStype == "posix":
-                    voice_channel.play(discord.FFmpegPCMAudio(filename)) #linux play function
-                filename = filename.replace("_", " ")
-                filename = filename[:-16]
-                if (filename[-1] == "-"): 
-                    filename = filename[:-1]
-                embed = discord.Embed(title="Now playing", description=filename, color = discord.Color.green())
+                    voice_channel.play(discord.FFmpegPCMAudio(Filename)) #linux play function
+                embed = discord.Embed(title="Now playing", description=yt.title, color = discord.Color.green())
+                embed.set_image(url=yt.thumbnail_url)
                 embed.set_footer(icon_url= ctx.author.avatar_url, text= f"Requestested by {ctx.author.name}")
                 await ctx.message.add_reaction('\U0001F44C')
                 await ctx.send(embed = embed)
