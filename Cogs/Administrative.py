@@ -100,6 +100,14 @@ class Administrative(commands.Cog):
             else:
                 await ctx.message.add_reaction('\U000026A0')
                 await ctx.send(embed=self.wrong)
+    @commands.command(name="verify") #command for verifying security key
+    async def verify(self, ctx, otp):
+        key = self.key.now()
+        if str(key) == str(otp):
+            await ctx.send("Verification passed!")
+        else:
+            await ctx.message.add_reaction('\U000026A0')
+            await ctx.send(f"Verification failed, key was {key}.")
 
 def setup(bot):
     bot.add_cog(Administrative(bot))

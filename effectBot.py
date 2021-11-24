@@ -38,9 +38,10 @@ async def on_guild_join(guild): #custom bot join message
 async def on_message(ctx): #mentioning the bot sends info embed
     if f"<@!{bot.user.id}>" in ctx.content:
         embed = discord.Embed(title="Bot mention",
-                              description= "Bot's current prefix is **!**, customizable prefix coming soon maybe!",
+                              description= "Bot's current prefix is **!**, customizable prefix maybe coming soon!",
                               color = discord.Color.green())
         embed.add_field(name="Support server", value="https://discord.gg/Dx3JaJfkcD \n Join if you found some bugs, that would be huge help for me.")
+        embed.add_field(name="Last update:", value="24.11.2021") #don't forget to change after each update!!
         await ctx.channel.send(embed=embed)
     await bot.process_commands(ctx) #get rid of bot's soft lock
 

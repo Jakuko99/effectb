@@ -28,8 +28,7 @@ Bot's commands are split to four categories based what is their purpose. Now usi
 
 ## To Do
 [x] Add Linux alternative for TTS (works, but it makes bot freeze sometimes) </br>
-[ ] Create queue system for audio </br>
-[x] Fix youtube-dl issue </br>
+[ ] Create queue system or playlist support for audio </br>
 [?] Direct url playback </br>
 
 ## Commands
@@ -38,14 +37,16 @@ Default bot prefix is **!** (exclamation mark), in the future there may be comma
 | ----------- | ----------- | ----------- | ----------- |
 | help | - | none | Returns list of all bot's commands |
 |invite| - | none | Sends invite to bot's support server|
-| funny | - |  none | Randomly chooses one funny quote from file quotes.txt |
-| meme | meme [subreddit] | subreddit | Fetches image post from chosen subreddit of chooses one from top posts on meme subreddit. |
+|bot mention| - | none | Prints bot's prefix and invite to suppor server |
+| funny | - |  none | Randomly chooses one funny quote from quotes.txt |
+| meme | meme [subreddit] | subreddit | Fetches image post from chosen subreddit or chooses one from top posts on meme subreddit. |
 | join | - | none | Connects bot to the voice channel sender of the message is in |
 | disconnect | aliases: dc | none | Disconnects bot from its current voice channel |
-| play | play [URL] | URL | Downloads and plays given video, autoconnects to voice channel. This feature doesn't work currently due to youtube-dl problem. |
+| play | play [URL/search phrase] | URL/search phrase | Plays given video, autoconnects to voice channel. You can use url of video, or search for it |
+| playlist | playlist [URL] | URL | Plays contents of given playlist url, feature comming soon |
 | pl | - | none | Audio playback test command, plays test_file.mp3 |
-| pause | - | none | Pauses current audio playback |
-| resume | - | none | Resumes audio playback |
+| pause | aliases: pa | none | Pauses current audio playback |
+| resume | aliases: re | none | Resumes audio playback |
 | stop | - | none | Completely stops audio playback |
 | search | search [movie/series] | name | Searches IMDb for movie or series with that name and returns results |
 | movie | movie [movie/series] | title | Returns overview of movie or series |
