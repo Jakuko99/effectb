@@ -107,7 +107,7 @@ class Administrative(commands.Cog):
             await ctx.send("Verification passed!")
         else:
             await ctx.message.add_reaction('\U000026A0')
-            await ctx.send(f"Verification failed, key was {key}.")
+            await ctx.send(f"Verification failed!")
 
 def setup(bot):
     bot.add_cog(Administrative(bot))
