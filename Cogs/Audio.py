@@ -2,12 +2,31 @@ from discord.ext import commands
 from discord import guild,message
 from pytube import YouTube, Search, Playlist
 from tools import Tools
+import re
 
 import discord
 import asyncio
 import os
 
 OStype = os.name
+
+def playback(url, voice_channel):
+    Filename = "downloaded.mp3"
+    if "http" in url: #check if string contains url address
+        yt = YouTube(url)
+        stream = yt.streams.get_by_itag(140)
+        stream.download(filename=Filename)
+    else:
+        Yt = Search(url)
+        stream= Yt.results[0].streams.get_by_itag(140)
+        stream.download(filename=Filename)
+        yt = Yt.results[0]
+      
+    if OStype == "nt":
+        voice_channel.play(discord.FFmpegPCMAudio(executable="ffmpeg.exe", source=Filename)) #windows play function
+    elif OStype == "posix":
+        voice_channel.play(discord.FFmpegPCMAudio(Filename)) #linux play function
+    return yt
 
 class Audio(commands.Cog):
     def __init__(self, bot):
@@ -16,7 +35,7 @@ class Audio(commands.Cog):
 
     @commands.command(name="play", help="plays audio form URL")
     async def play(self,ctx,*data):
-        url = self.tools.tupleUnpack(data)
+        url = self.tools.tupleUnpack(data) #combine tuple into single string
         try:
             user = ctx.message.author
             vc = user.voice.channel
@@ -28,27 +47,20 @@ class Audio(commands.Cog):
         except:
             await ctx.send("The bot is not connected to a voice channel.")
         else:
-            async with ctx.typing():
-                Filename = "downloaded.mp3"
-                if "http" in url:
-                    yt = YouTube(url)
-                    stream = yt.streams.get_by_itag(140)
-                    stream.download(filename=Filename)
-                else:
-                    Yt = Search(url)
-                    stream= Yt.results[0].streams.get_by_itag(140)
-                    stream.download(filename=Filename)
-                    yt = Yt.results[0]
-                
-                if OStype == "nt":
-                    voice_channel.play(discord.FFmpegPCMAudio(executable="ffmpeg.exe", source=Filename)) #windows play function
-                elif OStype == "posix":
-                    voice_channel.play(discord.FFmpegPCMAudio(Filename)) #linux play function
-                embed = discord.Embed(title="Now playing",  description=f"{yt.title}\n{yt.watch_url}", color = discord.Color.green()) #maybe add url later
-                embed.set_thumbnail(url=yt.thumbnail_url)
-                embed.set_footer(icon_url= ctx.author.avatar_url, text= f"Requestested by {ctx.author.name}")
-                await ctx.message.add_reaction('\U0001F44C')
-                await ctx.send(embed = embed)
+            if not voice_channel.is_playing():  
+                async with ctx.typing():                                   
+                    yt = playback(url, voice_channel)
+                    info = "Now playing"
+            else:
+                voice_channel.stop() #stop previous playback and play given file
+                yt = playback(url, voice_channel)
+                info = "Stopping previous playback and playing"
+
+            embed = discord.Embed(title=info,  description=f"{yt.title}\n{yt.watch_url}", color = discord.Color.green()) #maybe add url later
+            embed.set_thumbnail(url=yt.thumbnail_url)
+            embed.set_footer(icon_url= ctx.author.avatar_url, text= f"Requestested by {ctx.author.name}")
+            await ctx.message.add_reaction('\U0001F44C')
+            await ctx.send(embed = embed)
     
     @commands.command(name="pl", help="audio test command")
     async def pl(self, ctx):
@@ -100,7 +112,7 @@ class Audio(commands.Cog):
             await ctx.send("The bot is not playing anything at the moment.")
 
     @commands.command(name="playlist", help = "plays videos from given playlist URL")
-    async def playlist(self, ctx, url=None): #change later to normal
+    async def playlist(self, ctx, url):
         try:
             user = ctx.message.author
             vc = user.voice.channel
@@ -113,16 +125,15 @@ class Audio(commands.Cog):
             await ctx.send("The bot is not connected to a voice channel.")
         else:
             async with ctx.typing():
-                # playlist = Playlist(url)
-                # if OStype == "nt":
-                #     voice_channel.play(discord.FFmpegPCMAudio(executable="ffmpeg.exe", source=filename)) #windows play function
-                # elif OStype == "posix":
-                #     voice_channel.play(discord.FFmpegPCMAudio(filename)) #linux play function
-                # embed = discord.Embed(title="Playing content from playlist", description = playlist.title, color=discord.Color.green())
-                # embed.set_thumbnail(url=playlist.videos[0].thumbnail_url)
-                # await ctx.message.add_reaction('\U0001F44C')
-                # await ctx.send(embed=embed)
-                await ctx.send("Playlist feature coming soon") #also add queue command
+                playlist = Playlist(url)
+                playlist._video_regex = re.compile(r"\"url\":\"(/watch\?v=[\w-]*)") #fix empty videos playlist
+                pos = 0
+                yt = playback(playlist.videos[pos].watch_url, voice_channel)
+                embed = discord.Embed(title="Playing content from playlist", description = playlist.title, color=discord.Color.green())
+                embed.add_field(name="Track:", value=f"{yt.title}\n{yt.watch_url}", inline=True)
+                embed.set_thumbnail(url=playlist.videos[pos].thumbnail_url)
+                await ctx.message.add_reaction('\U0001F44C')
+                await ctx.send(embed=embed) # adding delete_after=1 parameter would delete message after 1 second
 
 def setup(bot):
     bot.add_cog(Audio(bot))

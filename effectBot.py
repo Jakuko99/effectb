@@ -17,6 +17,7 @@ handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(me
 logger.addHandler(handler)
 
 bot = commands.Bot(command_prefix="!",status=discord.Status.online)  #creating object bot with ! prefix
+#bot = commands.Bot(command_prefix="!", activity=discord.Game(name="Maintenance Mode"), status=discord.Status.idle)
 
 @bot.event
 async def on_ready():   #bot ready console message, prints servers where the bot is used
@@ -41,7 +42,7 @@ async def on_message(ctx): #mentioning the bot sends info embed
                               description= "Bot's current prefix is **!**, customizable prefix maybe coming soon!",
                               color = discord.Color.green())
         embed.add_field(name="Support server", value="https://discord.gg/Dx3JaJfkcD \n Join if you found some bugs, that would be huge help for me.")
-        embed.add_field(name="Last update:", value="24.11.2021") #don't forget to change after each update!!
+        embed.add_field(name="Last update:", value="25.11.2021") #don't forget to change after each update!!
         await ctx.channel.send(embed=embed)
     await bot.process_commands(ctx) #get rid of bot's soft lock
 
