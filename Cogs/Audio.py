@@ -35,7 +35,7 @@ class Audio(commands.Cog):
            self.pos = 0
            self.stop = True
            self.next = False
-           self.playlist = False
+           self.pause = False
 
     @commands.command(name="play", help="plays audio form URL")
     async def play(self,ctx,*data):
@@ -57,6 +57,10 @@ class Audio(commands.Cog):
                     info = "Now playing"
             else:
                 voice_channel.stop() #stop previous playback and play given file
+                try:
+                    self.track.stop() #fully stop playback of playlist
+                except:
+                    pass
                 yt = playback(url, voice_channel)
                 info = "Stopping previous playback and playing"
 
@@ -90,6 +94,7 @@ class Audio(commands.Cog):
         
     @commands.command(name='pause', aliases = ['pa'], help='pauses current playback')
     async def pause(self,ctx):
+        self.pause = True
         voice_client = ctx.message.guild.voice_client
         if voice_client.is_playing():
             voice_client.pause()
@@ -99,6 +104,7 @@ class Audio(commands.Cog):
 
     @commands.command(name='resume', aliases=['re'], help='resumes the playback')
     async def resume(self,ctx):
+        self.pause = False
         voice_client = ctx.message.guild.voice_client
         if voice_client.is_paused():
             voice_client.resume()
@@ -144,23 +150,28 @@ class Audio(commands.Cog):
                 self.voice_channel = voice_channel
                 self.playlist = playlist
                 self.ctx = ctx
-                self.track.start()
+                try:
+                    self.track.start()
+                except:
+                    pass #do nothing, because task is already running
                 await ctx.message.add_reaction('\U0001F44C')
                 await ctx.send(embed=embed) # adding delete_after=1 parameter would delete message after 1 second                    
     
     @tasks.loop(seconds = 1)             
     async def track(self):
-        if self.stop == True:
+        if not discord.utils.get(self.bot.voice_clients, guild=self.ctx.guild):
+            self.track.stop() #stop task if disconnected from voice channel
+        elif self.stop == True:
             self.stop = False
-            self.track.stop() #stop background task
-        elif not self.voice_channel.is_playing() and self.pos < len(self.playlist): #if not playing then play next one                        
+        elif not self.voice_channel.is_playing() and self.pos < len(self.playlist) and self.pause == False: #if not playing then play next one                        
             async with self.ctx.typing():
                 yt = playback(self.playlist.videos[self.pos].watch_url, self.voice_channel)
                 embed = discord.Embed(title="Currently playing", description=f"{yt.title}\n{yt.watch_url}", color=discord.Color.green())
                 embed.set_thumbnail(url=yt.thumbnail_url)
             self.pos += 1
-            await self.ctx.send(embed=embed, delete_after=60)                        
-        if self.next == True:
+            await self.ctx.send(embed=embed, delete_after=60)   
+            self.track.stop() #stop background task                     
+        elif self.next == True:
             self.voice_channel.stop()
             self.next = False   
 
