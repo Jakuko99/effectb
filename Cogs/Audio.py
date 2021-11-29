@@ -1,4 +1,4 @@
-from discord.ext import commands
+from discord.ext import commands, tasks
 from discord import guild,message
 from pytube import YouTube, Search, Playlist
 from tools import Tools
@@ -32,6 +32,10 @@ class Audio(commands.Cog):
     def __init__(self, bot):
            self.bot = bot
            self.tools = Tools()
+           self.pos = 0
+           self.stop = True
+           self.next = False
+           self.playlist = False
 
     @commands.command(name="play", help="plays audio form URL")
     async def play(self,ctx,*data):
@@ -105,6 +109,8 @@ class Audio(commands.Cog):
     @commands.command(name='stop', help='stops the playback')
     async def stop(self,ctx):
         voice_client = ctx.message.guild.voice_client
+        self.stop = True
+        self.track.stop()
         if voice_client.is_playing():
             voice_client.stop()
             await ctx.message.add_reaction('\U000023F9')
@@ -113,6 +119,7 @@ class Audio(commands.Cog):
 
     @commands.command(name="playlist", help = "plays videos from given playlist URL")
     async def playlist(self, ctx, url):
+        self.stop = False
         try:
             user = ctx.message.author
             vc = user.voice.channel
@@ -127,13 +134,41 @@ class Audio(commands.Cog):
             async with ctx.typing():
                 playlist = Playlist(url)
                 playlist._video_regex = re.compile(r"\"url\":\"(/watch\?v=[\w-]*)") #fix empty videos playlist
-                pos = 0
-                yt = playback(playlist.videos[pos].watch_url, voice_channel)
-                embed = discord.Embed(title="Playing content from playlist", description = playlist.title, color=discord.Color.green())
+                self.pos = 0
+                yt = playback(playlist.videos[self.pos].watch_url, voice_channel)
+                embed = discord.Embed(title="Playing content from playlist", description = f"{playlist.title} ({len(playlist)} tracks)", color=discord.Color.green())
                 embed.add_field(name="Track:", value=f"{yt.title}\n{yt.watch_url}", inline=True)
-                embed.set_thumbnail(url=playlist.videos[pos].thumbnail_url)
+                embed.set_thumbnail(url=playlist.videos[self.pos].thumbnail_url)
+                self.pos += 1
+                self.bot.loop.create_task(self.track())
+                self.voice_channel = voice_channel
+                self.playlist = playlist
+                self.ctx = ctx
+                self.track.start()
                 await ctx.message.add_reaction('\U0001F44C')
-                await ctx.send(embed=embed) # adding delete_after=1 parameter would delete message after 1 second
+                await ctx.send(embed=embed) # adding delete_after=1 parameter would delete message after 1 second                    
+    
+    @tasks.loop(seconds = 1)             
+    async def track(self):
+        if self.stop == True:
+            self.stop = False
+            self.track.stop() #stop background task
+        elif not self.voice_channel.is_playing() and self.pos < len(self.playlist): #if not playing then play next one                        
+            async with self.ctx.typing():
+                yt = playback(self.playlist.videos[self.pos].watch_url, self.voice_channel)
+                embed = discord.Embed(title="Currently playing", description=f"{yt.title}\n{yt.watch_url}", color=discord.Color.green())
+                embed.set_thumbnail(url=yt.thumbnail_url)
+            self.pos += 1
+            await self.ctx.send(embed=embed, delete_after=60)                        
+        if self.next == True:
+            self.voice_channel.stop()
+            self.next = False   
+
+    @commands.command(name="next", aliases= ['ne'], help="play next item in playlis")
+    async def next(self, ctx):
+        self.next = True
+        #await ctx.message.add_reaction('\U000023e9')
+        await ctx.message.delete()
 
 def setup(bot):
     bot.add_cog(Audio(bot))
