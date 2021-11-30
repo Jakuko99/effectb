@@ -145,6 +145,7 @@ class Audio(commands.Cog):
                 embed = discord.Embed(title="Playing content from playlist", description = f"{playlist.title} ({len(playlist)} tracks)", color=discord.Color.green())
                 embed.add_field(name="Track:", value=f"{yt.title}\n{yt.watch_url}", inline=True)
                 embed.set_thumbnail(url=playlist.videos[self.pos].thumbnail_url)
+                embed.set_footer(icon_url= ctx.author.avatar_url, text= f"Requestested by {ctx.author.name}")
                 self.pos += 1
                 self.bot.loop.create_task(self.track())
                 self.voice_channel = voice_channel
@@ -163,14 +164,14 @@ class Audio(commands.Cog):
             self.track.stop() #stop task if disconnected from voice channel
         elif self.stop == True:
             self.stop = False
+            self.track.stop() #stop background task
         elif not self.voice_channel.is_playing() and self.pos < len(self.playlist) and self.pause == False: #if not playing then play next one                        
             async with self.ctx.typing():
                 yt = playback(self.playlist.videos[self.pos].watch_url, self.voice_channel)
                 embed = discord.Embed(title="Currently playing", description=f"{yt.title}\n{yt.watch_url}", color=discord.Color.green())
                 embed.set_thumbnail(url=yt.thumbnail_url)
-            self.pos += 1
-            await self.ctx.send(embed=embed, delete_after=60)   
-            self.track.stop() #stop background task                     
+                self.pos += 1
+            await self.ctx.send(embed=embed, delete_after=60)                        
         elif self.next == True:
             self.voice_channel.stop()
             self.next = False   

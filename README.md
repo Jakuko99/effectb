@@ -43,10 +43,11 @@ Default bot prefix is **!** (exclamation mark), in the future there may be comma
 | join | - | none | Connects bot to the voice channel sender of the message is in |
 | disconnect | aliases: dc | none | Disconnects bot from its current voice channel |
 | play | play [URL/search phrase] | URL/search phrase | Plays given video, autoconnects to voice channel. You can use url of video, or search for it |
-| playlist | playlist [URL] | URL | Plays contents of given playlist url, feature coming soon |
+| playlist | playlist [URL] | URL | Plays contents of given playlist url |
 | pl | - | none | Audio playback test command, plays test_file.mp3 |
 | pause | aliases: pa | none | Pauses current audio playback |
 | resume | aliases: re | none | Resumes audio playback |
+| next | aliases: ne | none | Skips to next item in playlist |
 | stop | - | none | Completely stops audio playback |
 | search | search [movie/series] | name | Searches IMDb for movie or series with that name and returns results |
 | movie | movie [movie/series] | title | Returns overview of movie or series |
