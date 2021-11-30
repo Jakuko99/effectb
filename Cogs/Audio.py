@@ -176,11 +176,21 @@ class Audio(commands.Cog):
             self.voice_channel.stop()
             self.next = False   
 
-    @commands.command(name="next", aliases= ['ne'], help="play next item in playlis")
+    @commands.command(name="next", aliases= ['ne'], help="play next item in playlist")
     async def next(self, ctx):
         self.next = True
-        #await ctx.message.add_reaction('\U000023e9')
-        await ctx.message.delete()
+        await ctx.message.add_reaction('\U000023e9')
+        await ctx.message.delete(delay=5) #perform deletion of message 5 seconds later
+
+    @commands.command(name="now", help="returns currently playing track in playlist")
+    async def now(self, ctx):
+        current_item = self.playlist.videos[self.pos if self.pos==0 else self.pos-1].watch_url
+        yt = YouTube(current_item)
+        embed = discord.Embed(title="Currently playing", description=f"{yt.title}\n{yt.watch_url}", color=discord.Color.green())
+        embed.set_thumbnail(url=yt.thumbnail_url)
+        await ctx.send(embed=embed, delete_after=60) #delete informational messages after 60 seconds to avoid cluttering
+        await ctx.message.add_reaction('\U0001F3B5')
+        await ctx.message.delete(delay=5)
 
 def setup(bot):
     bot.add_cog(Audio(bot))

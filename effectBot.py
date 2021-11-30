@@ -8,7 +8,6 @@ OStype = os.name
 load_dotenv()
 
 TOKEN = os.getenv("BOT_TOKEN")   #bot token
-servers = []
 
 logger = logging.getLogger("discord")   #logger configuration
 logger.setLevel(logging.DEBUG)
@@ -23,6 +22,7 @@ bot = commands.Bot(command_prefix="!",status=discord.Status.online)  #creating o
 async def on_ready():   #bot ready console message, prints servers where the bot is used
     print("Bot is running on",OStype)
     print(f'{bot.user} is ready!')
+    servers = []
     for guild in bot.guilds:
         servers.append(guild.name)
     print("Bot is in these servers:",servers)
@@ -42,7 +42,7 @@ async def on_message(ctx): #mentioning the bot sends info embed
                               description= "Bot's current prefix is **!**, customizable prefix maybe coming soon!",
                               color = discord.Color.green())
         embed.add_field(name="Support server", value="https://discord.gg/Dx3JaJfkcD \n Join if you found some bugs, that would be huge help for me.")
-        embed.add_field(name="Last update:", value="29.11.2021") #don't forget to change after each update!!
+        embed.add_field(name="Last update:", value="30.11.2021") #don't forget to change after each update!!
         await ctx.channel.send(embed=embed)
     await bot.process_commands(ctx) #get rid of bot's soft lock
 

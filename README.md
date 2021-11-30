@@ -48,6 +48,7 @@ Default bot prefix is **!** (exclamation mark), in the future there may be comma
 | pause | aliases: pa | none | Pauses current audio playback |
 | resume | aliases: re | none | Resumes audio playback |
 | next | aliases: ne | none | Skips to next item in playlist |
+| now | - | none | Shows current song playing from playlist |
 | stop | - | none | Completely stops audio playback |
 | search | search [movie/series] | name | Searches IMDb for movie or series with that name and returns results |
 | movie | movie [movie/series] | title | Returns overview of movie or series |
