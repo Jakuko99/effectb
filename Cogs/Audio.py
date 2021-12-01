@@ -10,8 +10,8 @@ import os
 
 OStype = os.name
 
-def playback(url, voice_channel):
-    Filename = "downloaded.mp3"
+def playback(url, voice_channel, guild_id):
+    Filename = f"downloaded-{guild_id}.mp3"
     if "http" in url: #check if string contains url address
         yt = YouTube(url)
         stream = yt.streams.get_by_itag(140)
@@ -39,6 +39,7 @@ class Audio(commands.Cog):
 
     @commands.command(name="play", help="plays audio form URL")
     async def play(self,ctx,*data):
+        guild_id = ctx.message.guild.id
         url = self.tools.tupleUnpack(data) #combine tuple into single string
         try:
             user = ctx.message.author
@@ -53,7 +54,7 @@ class Audio(commands.Cog):
         else:
             if not voice_channel.is_playing():  
                 async with ctx.typing():                                   
-                    yt = playback(url, voice_channel)
+                    yt = playback(url, voice_channel, guild_id)
                     info = "Now playing"
             else:
                 voice_channel.stop() #stop previous playback and play given file
@@ -61,7 +62,7 @@ class Audio(commands.Cog):
                     self.track.stop() #fully stop playback of playlist
                 except:
                     pass
-                yt = playback(url, voice_channel)
+                yt = playback(url, voice_channel, guild_id)
                 info = "Stopping previous playback and playing"
 
             embed = discord.Embed(title=info,  description=f"{yt.title}\n{yt.watch_url}", color = discord.Color.green()) #maybe add url later
@@ -116,7 +117,10 @@ class Audio(commands.Cog):
     async def stop(self,ctx):
         voice_client = ctx.message.guild.voice_client
         self.stop = True
-        self.track.stop()
+        try:
+            self.track.stop()
+        except:
+            pass
         if voice_client.is_playing():
             voice_client.stop()
             await ctx.message.add_reaction('\U000023F9')
@@ -126,6 +130,7 @@ class Audio(commands.Cog):
     @commands.command(name="playlist", help = "plays videos from given playlist URL")
     async def playlist(self, ctx, url):
         self.stop = False
+        self.guild_id = ctx.message.guild.id
         try:
             user = ctx.message.author
             vc = user.voice.channel
@@ -141,7 +146,7 @@ class Audio(commands.Cog):
                 playlist = Playlist(url)
                 playlist._video_regex = re.compile(r"\"url\":\"(/watch\?v=[\w-]*)") #fix empty videos playlist
                 self.pos = 0
-                yt = playback(playlist.videos[self.pos].watch_url, voice_channel)
+                yt = playback(playlist.videos[self.pos].watch_url, voice_channel, self.guild_id)
                 embed = discord.Embed(title="Playing content from playlist", description = f"{playlist.title} ({len(playlist)} tracks)", color=discord.Color.green())
                 embed.add_field(name="Track:", value=f"{yt.title}\n{yt.watch_url}", inline=True)
                 embed.set_thumbnail(url=playlist.videos[self.pos].thumbnail_url)
@@ -167,7 +172,7 @@ class Audio(commands.Cog):
             self.track.stop() #stop background task
         elif not self.voice_channel.is_playing() and self.pos < len(self.playlist) and self.pause == False: #if not playing then play next one                        
             async with self.ctx.typing():
-                yt = playback(self.playlist.videos[self.pos].watch_url, self.voice_channel)
+                yt = playback(self.playlist.videos[self.pos].watch_url, self.voice_channel, self.guild_id)
                 embed = discord.Embed(title="Currently playing", description=f"{yt.title}\n{yt.watch_url}", color=discord.Color.green())
                 embed.set_thumbnail(url=yt.thumbnail_url)
                 self.pos += 1
