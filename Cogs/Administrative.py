@@ -104,6 +104,7 @@ class Administrative(commands.Cog):
     async def verify(self, ctx, otp):
         key = self.key.now()
         if str(key) == str(otp):
+            await ctx.message.add_reaction('\U00002705')
             await ctx.send("Verification passed!")
         else:
             await ctx.message.add_reaction('\U000026A0')

@@ -14,11 +14,11 @@ def playback(url, voice_channel, guild_id):
     Filename = f"downloaded-{guild_id}.mp3"
     if "http" in url: #check if string contains url address
         yt = YouTube(url)
-        stream = yt.streams.get_by_itag(140)
+        stream = yt.streams.get_audio_only()
         stream.download(filename=Filename)
     else:
         Yt = Search(url)
-        stream= Yt.results[0].streams.get_by_itag(140)
+        stream= Yt.results[0].streams.get_audio_only()
         stream.download(filename=Filename)
         yt = Yt.results[0]
       
