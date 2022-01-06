@@ -109,6 +109,12 @@ class Administrative(commands.Cog):
         else:
             await ctx.message.add_reaction('\U000026A0')
             await ctx.send(f"Verification failed!")
+    
+    # @commands.command(name="dm")
+    # async def dm(self, ctx):
+    #     user = await self.bot.fetch_user(USER_ID) #get user based on their id
+    #     await user.send("Your message") #send message to fetched user
+    #     #TODO: figure out how to do interaction from reaction
 
 def setup(bot):
     bot.add_cog(Administrative(bot))
