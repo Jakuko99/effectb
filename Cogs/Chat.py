@@ -24,9 +24,11 @@ class Chat(commands.Cog):
         self.bot = bot
 
     @commands.command(name="meme", help="displays funny meme from Reddit") #meme module with Praw
-    async def meme(self,ctx,subred = "memes"):
+    async def meme(self,ctx,sub=""):
+        subred = sub if not len(sub) == 0 else random.choice(["memes", "funny", "comedycemetery", "teenagers", "dankmemes"]) #randomly choose subredit if none given
+        print(subred)
         async with ctx.typing():
-            sub = await reddit.subreddit(subred) #TODO fix weird subreddit bug
+            sub = await reddit.subreddit(subred)
             all_subs = []
             top = sub.top(limit=50)
             async for submission in top:
