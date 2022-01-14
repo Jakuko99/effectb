@@ -15,8 +15,8 @@ handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w'
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
-bot = commands.Bot(command_prefix="!",status=discord.Status.online)  #creating object bot with ! prefix
-# bot = commands.Bot(command_prefix="!", activity=discord.Game(name="Maintenance Mode"), status=discord.Status.idle)
+# bot = commands.Bot(command_prefix="!", activity=discord.Game(name="Development Mode"), status=discord.Status.idle)
+bot = commands.Bot(command_prefix="!", status=discord.Status.online)  #creating object bot with ! prefix
 
 @bot.event
 async def on_ready():   #bot ready console message, prints servers where the bot is used
@@ -42,9 +42,11 @@ async def on_message(ctx): #mentioning the bot sends info embed
                               description= "Bot's current prefix is **!**, customizable prefix maybe coming soon!",
                               color = discord.Color.green())
         embed.add_field(name="Support server", value="https://discord.gg/Dx3JaJfkcD \n Join if you found some bugs, that would be huge help for me.")
-        embed.add_field(name="Last update:", value="12.01.2022") #don't forget to change after each update!!
+        embed.add_field(name="Last update:", value="14.01.2022") #don't forget to change after each update!!
         await ctx.channel.send(embed=embed)
     await bot.process_commands(ctx) #get rid of bot's soft lock
+    # if not ctx.author.bot: #make bot respond to every message
+    #     await ctx.channel.send(ctx.content)
 
 bot.load_extension("Cogs.Audio") #load audio commands (pl, play)
 bot.load_extension("Cogs.Utility") #commands for joining and disconnecting from VCs
@@ -53,7 +55,7 @@ bot.load_extension("Cogs.Administrative") #protected set of commands
 bot.load_extension("Cogs.IMDb") #load IMDb module
 #bot.load_extension("Cogs.Components") #components cog
 
-if OStype == "nt":
-    bot.load_extension("Cogs.TTS") #only load on Windows for now
+# if OStype == "nt":
+#     bot.load_extension("Cogs.TTS")
 
 bot.run(TOKEN)

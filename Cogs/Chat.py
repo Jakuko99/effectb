@@ -1,10 +1,8 @@
 from discord.ext import commands
 import discord
 import os
-from discord.ext.commands.core import check
 from dotenv import load_dotenv
 import apraw
-import asyncio
 import random
 
 def loadFile(file):
@@ -26,7 +24,6 @@ class Chat(commands.Cog):
     @commands.command(name="meme", help="displays funny meme from Reddit") #meme module with Praw
     async def meme(self,ctx,sub=""):
         subred = sub if not len(sub) == 0 else random.choice(["memes", "funny", "comedycemetery", "teenagers", "dankmemes"]) #randomly choose subredit if none given
-        print(subred)
         async with ctx.typing():
             sub = await reddit.subreddit(subred)
             all_subs = []

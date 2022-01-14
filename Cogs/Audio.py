@@ -1,4 +1,3 @@
-from discord.embeds import Embed
 from discord.ext import commands, tasks
 from pytube import YouTube, Search, Playlist
 from tools import Tools
@@ -38,15 +37,10 @@ class Audio(commands.Cog):
     def __init__(self, bot):
            self.bot = bot
            self.tools = Tools()
-           self.pos = 0
-           self. queue_list = []
-           self.stop = True
-           self.next = False
-           self.pause = False
+           self.serverSide = {} #dictionary of dictionaries to store information about playback for isolation across guilds
 
     @commands.command(name="play", help="plays audio form URL")
     async def play(self,ctx,*data):
-        self.pause = False #just to be sure
         guild_id = ctx.message.guild.id
         url = self.tools.tupleUnpack(data) #combine tuple into single string
         try:
@@ -72,40 +66,23 @@ class Audio(commands.Cog):
                         return #end command after wrong link
             else:
                 yt = getPlaylistItem(url)
-                self. queue_list.append(yt)
-                self.ctx = ctx
-                self.voice_channel = voice_channel
-                self.guild_id = guild_id
-                self.bot.loop.create_task(self.Queue())
-                try:
-                     self.Queue.start() #really important to start the task afterwards !!!
-                except:
-                    pass #task should be running
-                info = f"Added {yt.title} to playlist"
+                # self.queue_list.append(yt)
+                # self.ctx = ctx
+                # self.voice_channel = voice_channel
+                # self.guild_id = guild_id
+                # self.bot.loop.create_task(self.Queue())
+                # try:
+                #      self.Queue.start() #really important to start the task afterwards !!!
+                # except:
+                #     pass #task should be running
+                # info = f"Added {yt.title} to playlist"
+                info = "Currently playing audio, stop before playing another."
 
-            print(yt.watch_url)
             embed = discord.Embed(title=info,  description=f"{yt.title}\n{yt.watch_url}", color = discord.Color.green()) #maybe add url later
             embed.set_thumbnail(url=yt.thumbnail_url)
             embed.set_footer(icon_url= ctx.author.avatar_url, text= f"Requestested by {ctx.author.name}")
             await ctx.message.add_reaction('\U0001F44C')
             await ctx.send(embed = embed)
-
-    @tasks.loop(seconds = 1)             
-    async def Queue(self):
-        if not discord.utils.get(self.bot.voice_clients, guild=self.ctx.guild):
-            self.Queue.stop() #stop task if disconnected from voice channel
-        elif not self.voice_channel.is_playing() and self.pause == False and len(self. queue_list) >= 1: #if not playing then play next one                        
-            async with self.ctx.typing():                
-                yt = playback(self. queue_list[0].watch_url, self.voice_channel, self.guild_id)
-                embed = discord.Embed(title="Currently playing", description=f"{yt.title}\n{yt.watch_url}", color=discord.Color.green())
-                embed.set_thumbnail(url=yt.thumbnail_url)         
-                self.queue_list.pop(0) #remove first link       
-            await self.ctx.send(embed=embed, delete_after=60)                        
-        elif self.next == True:
-            self.voice_channel.stop()
-            self.next = False   
-        elif len(self. queue_list) == 0:
-            self.Queue.stop()
     
     @commands.command(name="pl", help="audio test command")
     async def pl(self, ctx):
@@ -131,7 +108,9 @@ class Audio(commands.Cog):
         
     @commands.command(name='pause', aliases = ['pa'], help='pauses current playback')
     async def pause(self,ctx):
-        self.pause = True
+        guild_id = ctx.message.guild.id
+        if guild_id in self.serverSide:
+            self.serverSide[guild_id]["pause"] = True
         voice_client = ctx.message.guild.voice_client
         if voice_client.is_playing():
             voice_client.pause()
@@ -142,7 +121,9 @@ class Audio(commands.Cog):
 
     @commands.command(name='resume', aliases=['re'], help='resumes the playback')
     async def resume(self,ctx):
-        self.pause = False
+        guild_id = ctx.message.guild.id
+        if guild_id in self.serverSide:
+            self.serverSide[guild_id]["pause"] = False
         voice_client = ctx.message.guild.voice_client
         if voice_client.is_paused():
             voice_client.resume()
@@ -153,13 +134,13 @@ class Audio(commands.Cog):
 
     @commands.command(name='stop', help='stops the playback')
     async def stop(self,ctx):
-        self. queue_list.clear() #clear the playlist
-        voice_client = ctx.message.guild.voice_client
+        guild_id = ctx.message.guild.id
         try:
             self.track.stop()
-            self.Queue.stop()
+            self.serverSide.pop(guild_id)
         except:
             pass
+        voice_client = ctx.message.guild.voice_client
         if voice_client.is_playing():
             voice_client.stop()
             await ctx.message.add_reaction('\U000023F9')
@@ -169,9 +150,8 @@ class Audio(commands.Cog):
 
     @commands.command(name="playlist", help = "plays videos from given playlist URL")
     async def playlist(self, ctx, url):
-        self.pause = False
-        self.stop = False
-        self.guild_id = ctx.message.guild.id
+        guild_id = ctx.message.guild.id
+        self.serverSide[guild_id] = {"next":False, "pause":False} #create entry for guild
         try:
             user = ctx.message.author
             vc = user.voice.channel
@@ -180,57 +160,62 @@ class Audio(commands.Cog):
                 await vc.connect()
             server = ctx.message.guild
             voice_channel = server.voice_client
+            voice_channel.stop()
         except:
             await ctx.send("The bot is not connected to a voice channel.")
         else:
             async with ctx.typing():
                 playlist = Playlist(url)
                 playlist._video_regex = re.compile(r"\"url\":\"(/watch\?v=[\w-]*)") #fix empty videos playlist
-                self.pos = 0
-                yt = playback(playlist.videos[self.pos].watch_url, voice_channel, self.guild_id)
+                pos = self.serverSide[guild_id]["pos"] = 0
+                yt = playback(playlist.videos[pos].watch_url, voice_channel, guild_id)
                 embed = discord.Embed(title="Playing content from playlist", description = f"{playlist.title} ({len(playlist)} tracks)", color=discord.Color.green())
                 embed.add_field(name="Track:", value=f"{yt.title}\n{yt.watch_url}", inline=True)
-                embed.set_thumbnail(url=playlist.videos[self.pos].thumbnail_url)
+                embed.set_thumbnail(url=playlist.videos[pos].thumbnail_url)
                 embed.set_footer(icon_url= ctx.author.avatar_url, text= f"Requestested by {ctx.author.name}")
-                self.pos += 1
-                self.bot.loop.create_task(self.track())
-                self.voice_channel = voice_channel
-                self.playlist = playlist
-                self.ctx = ctx
+                self.serverSide[guild_id]["pos"] += 1
+                self.bot.loop.create_task(self.track(guild_id)) #create task and pass guild id
+                self.serverSide[guild_id].update({"VC":voice_channel, "playlist":playlist, "ctx":ctx}) #join dictionary to another one
                 try:
-                    self.track.start()
-                except:
-                    pass #do nothing, because task is already running
+                    self.track.start(guild_id) #can you pass argument when starting task then ??
+                except Exception as e:
+                    print(e)
                 await ctx.message.add_reaction('\U0001F44C')
                 await ctx.send(embed=embed) # adding delete_after=1 parameter would delete message after 1 second                    
     
     @tasks.loop(seconds = 1)             
-    async def track(self):
-        if not discord.utils.get(self.bot.voice_clients, guild=self.ctx.guild):
-            self.track.stop() #stop task if disconnected from voice channel
-        elif self.stop == True:
-            self.stop = False
-            self.track.stop() #stop background task
-        elif not self.voice_channel.is_playing() and self.pos < len(self.playlist) and self.pause == False: #if not playing then play next one                        
-            async with self.ctx.typing():
-                yt = playback(self.playlist.videos[self.pos].watch_url, self.voice_channel, self.guild_id)
-                embed = discord.Embed(title="Currently playing", description=f"{yt.title}\n{yt.watch_url}", color=discord.Color.green())
-                embed.set_thumbnail(url=yt.thumbnail_url)
-                self.pos += 1
-            await self.ctx.send(embed=embed, delete_after=60)                        
-        elif self.next == True:
-            self.voice_channel.stop()
-            self.next = False
+    async def track(self, guild_id):
+        if guild_id in self.serverSide:
+            playlist, pos, ctx, voiceChannel = self.serverSide[guild_id]["playlist"], self.serverSide[guild_id]["pos"], self.serverSide[guild_id]["ctx"], self.serverSide[guild_id]["VC"]
+            if not discord.utils.get(self.bot.voice_clients, guild=ctx.guild):                             
+                self.track.stop() #stop task if disconnected from voice channel
+                self.serverSide.pop(guild_id) #clear out the entry for guild       
+            elif not voiceChannel.is_playing() and pos < len(playlist) and self.serverSide[guild_id]["pause"] == False: #if not playing then play next one                        
+                async with ctx.typing():
+                    yt = playback(playlist.videos[pos].watch_url, voiceChannel, guild_id)
+                    embed = discord.Embed(title="Currently playing", description=f"{yt.title}\n{yt.watch_url}", color=discord.Color.green())
+                    embed.set_thumbnail(url=yt.thumbnail_url)
+                    self.serverSide[guild_id]["pos"] += 1
+                await ctx.send(embed=embed, delete_after=60)                        
+            elif self.serverSide[guild_id]["next"] == True: #TODO: fix problem with next command
+                voiceChannel.stop()
+                self.serverSide[guild_id]["next"] = False
+        else:
+            self.track.stop() #stop task if there is no entry for guild
 
     @commands.command(name="next", aliases= ['ne'], help="play next item in playlist")
     async def next(self, ctx):
-        self.next = True
+        guild_id = ctx.message.guild.id
+        self.serverSide[guild_id]["next"] = True
         await ctx.message.add_reaction('\U000023e9')
         await ctx.message.delete(delay=5) #perform deletion of message 5 seconds later
 
     @commands.command(name="now", help="returns currently playing track in playlist")
     async def now(self, ctx):
-        yt = YouTube(self.playlist.videos[self.pos if self.pos==0 else self.pos-1].watch_url)
+        guild_id = ctx.message.guild.id
+        pos = self.serverSide[guild_id]["pos"]
+        current = self.serverSide[guild_id]["playlist"].videos[pos if pos==0 else pos-1]
+        yt = YouTube(current.watch_url)
         embed = discord.Embed(title="Currently playing", description=f"{yt.title}\n{yt.watch_url}", color=discord.Color.green())
         embed.set_thumbnail(url=yt.thumbnail_url)
         await ctx.send(embed=embed, delete_after=60) #delete informational messages after 60 seconds to avoid cluttering
