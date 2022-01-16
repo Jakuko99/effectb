@@ -5,7 +5,7 @@
 You can invite bot to your server using this [link](https://top.gg/bot/821641151613894706).
 
 ### Basic functionality
-My aim is to make this bot multifuncional. Current version is capable of sending posts from reddit, playing music from youtube (though this doesn't work currently), true TTS messages, funny quotes and more to come later. I am also planning to add some mini game like Tic-Tac-Toe or something similar.
+My aim is to make this bot multifuncional. Current version is capable of sending posts from reddit, playing music from youtube and basic playlist playback, funny quotes and more to come later. I am also planning to add some mini game like Tic-Tac-Toe or something similar.
 
 ### Running the bot
 Download the files and open them in your python code editor. Don't forget to install libraries from `requirements.txt` using `pip3 install -r requirements.txt`. You will also need to create .env file in code directory to be able to run this code, this file should be in this format:
@@ -16,7 +16,8 @@ REDDIT_SECRET=REDDIT_SECRET
 REDDIT_NAME=REDDIT_USERNAME
 REDDIT_PASS=REDDIT_PASSWORD
 ``` 
-### TTS Commands
+Then run bot with `python3 effectBot.py`
+### TTS
 Currently TTS works only on Windows hosts. It can work on Linux(Ubuntu, etc.), but the voices there are not that good and for some unknown reason the bot crashes sometimes after playback. Still trying to find a way how to use TTS, while bot is running on hosting service instead of locally.
 
 ## Cogs
@@ -25,10 +26,11 @@ Bot's commands are split to four categories based what is their purpose. Now usi
 - Audio - commands like playing audio from YouTube URL
 - TTS - Text-to-Speech messages (they only work if the bot is running on Windows for now)
 - Administrative - protected set of commands used to manage cogs
+- Components - test cog for new discord interaction elements (buttons, etc.), not in use right now
 
 ## To Do
 [x] Add Linux alternative for TTS (works, but it makes bot freeze sometimes) </br>
-[ ] Create queue system or playlist support for audio </br>
+[x] Create queue system or playlist support for audio </br>
 [?] Direct url playback </br>
 
 ## Commands
@@ -54,3 +56,8 @@ Default bot prefix is **!** (exclamation mark), in the future there may be comma
 | movie | movie [movie/series] | title | Returns overview of movie or series |
 | actor | actor [name] | name | Sends basic info about actor or actress with their filmography |
 | say | say [message] |message | Translates given message to TTS audio file and plays it. |
+
+## Issues to resolve
+- Code optimalization and stability improvements
+- Command bug fixes
+- Update other cogs

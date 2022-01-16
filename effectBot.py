@@ -42,7 +42,7 @@ async def on_message(ctx): #mentioning the bot sends info embed
                               description= "Bot's current prefix is **!**, customizable prefix maybe coming soon!",
                               color = discord.Color.green())
         embed.add_field(name="Support server", value="https://discord.gg/Dx3JaJfkcD \n Join if you found some bugs, that would be huge help for me.")
-        embed.add_field(name="Last update:", value="14.01.2022") #don't forget to change after each update!!
+        embed.add_field(name="Last update:", value="16.01.2022") #don't forget to change after each update!!
         await ctx.channel.send(embed=embed)
     await bot.process_commands(ctx) #get rid of bot's soft lock
     # if not ctx.author.bot: #make bot respond to every message
