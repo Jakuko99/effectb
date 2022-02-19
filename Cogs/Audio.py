@@ -52,6 +52,7 @@ class Audio(commands.Cog):
             voice_channel = server.voice_client
         except:
             await ctx.send("The bot is not connected to a voice channel.")
+            return
         else:
             if not guild_id is self.serverSide:
                 self.serverSide[guild_id] = {"next":False, "pause":False} #create entry for guild        
@@ -64,18 +65,22 @@ class Audio(commands.Cog):
                         self.bot.loop.create_task(self.Queue(guild_id))
                         self.serverSide[guild_id]["queue"].append(yt)
                         info = "Now playing"
-                    except:
+                    except Exception as e:
+                        print(e)
                         error = discord.Embed(title="Invalid video URL or error occured!", description="Check given link and try again.", color=discord.Color.green())                        
+                        # error.add_field(name="**Exception:**", value=e)
                         await ctx.send(embed=error)
                         return #end command after wrong link
             else:
                 yt = getItem(url)                
                 self.serverSide[guild_id]["queue"].append(yt)
                 self.serverSide[guild_id].update({"VC":voice_channel, "ctx":ctx}) #join dictionary to another one
-                try:                    
-                    self.Queue.start(guild_id) #can you pass argument when starting task then ??
-                except Exception as e:
-                    print(e)
+                if not self.Queue.is_running(): #if the task is already running no need to start it again
+                    print("task running")
+                    try:                    
+                        self.Queue.start(guild_id) #can you pass argument when starting task then ??
+                    except Exception as e:
+                        print(e)
                 info = "Added to the queue"
 
             embed = discord.Embed(title=info,  description=f"{yt.title}\n{yt.watch_url}", color = discord.Color.green()) #maybe add url later
@@ -243,13 +248,15 @@ class Audio(commands.Cog):
 
     @commands.command(name="now", help="returns currently playing track in playlist")
     async def now(self, ctx):
-        guild_id = ctx.message.guild.id
-        pos = self.serverSide[guild_id]["pos"]
-        if "queue" in self.serverSide[guild_id]:
-            current = self.serverSide[guild_id]["queue"][pos if pos==0 else pos-1]
-        elif "playlist" in self.serverSide[guild_id]:
-            current = self.serverSide[guild_id]["playlist"].videos[pos if pos==0 else pos-1]
+        guild_id = ctx.message.guild.id        
+        if guild_id in self.serverSide:
+            pos = self.serverSide[guild_id]["pos"]
+            if "queue" in self.serverSide[guild_id]:
+                current = self.serverSide[guild_id]["queue"][pos if pos==0 else pos-1]
+            elif "playlist" in self.serverSide[guild_id]:
+                current = self.serverSide[guild_id]["playlist"].videos[pos if pos==0 else pos-1]
         else:
+            await ctx.send("Currently not playing any music")
             return #if no thing exists as playlist or queue
         yt = YouTube(current.watch_url)
         embed = discord.Embed(title="Currently playing", description=f"{yt.title}\n{yt.watch_url}", color=discord.Color.green())
@@ -257,6 +264,6 @@ class Audio(commands.Cog):
         await ctx.send(embed=embed, delete_after=60) #delete informational messages after 60 seconds to avoid cluttering
         await ctx.message.add_reaction('\U0001F3B5')
         await ctx.message.delete(delay=5)
-
+    
 def setup(bot):
     bot.add_cog(Audio(bot))

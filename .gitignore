@@ -1,16 +1,13 @@
 effectBot_debug.py
-reddit_.py
 discord.log
 .log
 .env
 __pycache__/
 .vscode/
-tts_test.py
 *.mp3
 secret.gif
 !test_file.mp3
 Cogs/__pycache__/
 Cheatsheets/
-tts_input.py
-test.py
 pytube_test.py
+EffectBot.code-workspace
