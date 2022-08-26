@@ -1,5 +1,6 @@
-from discord.ext import commands
 import discord
+from discord.ext import commands
+from discord_slash import cog_ext, SlashCommand, SlashContext
 import os
 from dotenv import load_dotenv
 import apraw
@@ -17,12 +18,13 @@ reddit = apraw.Reddit(client_id=os.getenv("REDDIT_ID"), client_secret=os.getenv(
 quotes = []
 quotes= loadFile("quotes.txt")
 
-class Chat(commands.Cog):
+class Slash(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="meme", help="displays funny meme from Reddit") #meme module with Praw
-    async def meme(self,ctx,sub=""):
+    # @commands.command(name="meme", help="displays funny meme from Reddit") #meme module with Praw
+    @cog_ext.cog_slash(name="meme", description="displays funny meme from Reddit")
+    async def meme(self,ctx: SlashContext,sub=""):
         subred = sub if not len(sub) == 0 else random.choice(["memes", "funny", "comedycemetery", "teenagers", "dankmemes"]) #randomly choose subredit if none given
         async with ctx.typing():
             sub = await reddit.subreddit(subred)
@@ -46,4 +48,4 @@ class Chat(commands.Cog):
         await ctx.send(response)
 
 def setup(bot):
-    bot.add_cog(Chat(bot))
+    bot.add_cog(Slash(bot))

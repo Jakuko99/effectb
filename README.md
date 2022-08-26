@@ -32,6 +32,7 @@ Bot's commands are split to four categories based what is their purpose. Now usi
 [x] Add Linux alternative for TTS (works, but it makes bot freeze sometimes) </br>
 [x] Create queue system or playlist support for audio </br>
 [?] Direct url playback </br>
+[ ] Transition to slash commands
 
 ## Commands
 Default bot prefix is **!** (exclamation mark), in the future there may be command to change that.

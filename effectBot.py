@@ -1,4 +1,5 @@
 from discord.ext import commands
+from discord_slash import SlashCommand, SlashContext
 import logging
 import discord
 import os
@@ -17,6 +18,7 @@ logger.addHandler(handler)
 
 # bot = commands.Bot(command_prefix="!", activity=discord.Game(name="Development Mode"), status=discord.Status.idle)
 bot = commands.Bot(command_prefix="!", status=discord.Status.online)  #creating object bot with ! prefix
+slash = SlashCommand(bot, override_type=True)
 
 @bot.event
 async def on_ready():   #bot ready console message, prints servers where the bot is used
