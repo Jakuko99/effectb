@@ -11,3 +11,5 @@ Cogs/__pycache__/
 Cheatsheets/
 pytube_test.py
 EffectBot.code-workspace
+__pypackages__/
+.pdm.toml

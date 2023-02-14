@@ -1,0 +1,28 @@
+[project]
+name = ""
+version = ""
+description = ""
+authors = [
+    {name = "Jakub Krško", email = "jakubkrs@outlook.sk"},
+]
+dependencies = [
+    "discord>=2.1.0",
+    "apraw>=0.6.9a0",
+    "prawcore>=2.3.0",
+    "pynacl>=1.5.0",
+    "pyotp>=2.8.0",
+    "python-dateutil>=2.8.2",
+    "python-dotenv>=0.21.1",
+    "imdbpy>=2022.7.9",
+    "async>=0.6.2",
+    "pytube @ git+https://github.com/ehsanbehdad/Pytube",
+    "discord-py-slash-command>=4.2.1",
+]
+requires-python = ">=3.9"
+license = {text = "MIT"}
+
+[build-system]
+requires = ["pdm-pep517>=1.0.0"]
+build-backend = "pdm.pep517.api"
+
+[tool.pdm]
