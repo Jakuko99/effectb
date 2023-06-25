@@ -1,4 +1,5 @@
 from discord.ext import commands, tasks
+from discord_slash import cog_ext, SlashContext
 from pytube import YouTube, Search, Playlist
 from tools import Tools
 import re
@@ -38,10 +39,11 @@ class Audio(commands.Cog):
            self.tools = Tools()
            self.serverSide = {} #dictionary of dictionaries to store information about playback for isolation across guilds
 
-    @commands.command(name="play", help="plays audio form URL")
-    async def play(self,ctx,*data):
-        guild_id = ctx.message.guild.id       
-        url = self.tools.tupleUnpack(data) #combine tuple into single string
+    @cog_ext.cog_slash(name="play", description="play audio from URL")
+    # @commands.command(name="play", help="plays audio form URL")
+    async def play(self,ctx : SlashContext, url: str):
+        guild_id = ctx.message.guild.name  
+        # url = self.tools.tupleUnpack(data) #combine tuple into single string
         try:
             user = ctx.message.author
             vc = user.voice.channel

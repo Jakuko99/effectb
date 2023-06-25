@@ -49,7 +49,7 @@ class Administrative(commands.Cog):
             if server == "":
                 await ctx.send("Please specify a server!")
             else:
-                sent = False
+                sent = False               
                 for guild in self.bot.guilds:
                     if guild.name == server:
                         sent = True
@@ -118,5 +118,17 @@ class Administrative(commands.Cog):
         #     await user.send("Where are you?") #send message to fetched user
         # # TODO: figure out how to do interaction from reaction
 
+    # @commands.command(name="message") # info message command
+    # async def message(self, ctx):
+    #     embed=discord.Embed(title="Bot update", description="Transition to slash commands is well under way, but Heroku ended support for free dynos, so **starting from 05.10.2022 bot will no longer be online**, until I find another suitable hosting platform. Thanks for using and enjoying bot so far.\nJakub.\n*PS: Suggestions and improvents are still welcome.*", color=discord.Color.green())
+    #     embed.set_footer(text="Message brought to you from Effectbot developer.")
+    #     embed.set_thumbnail(url="https://i.imgur.com/wcuNoz2.jpg?1")             
+    #     for guild in self.bot.guilds:
+#             try:            
+#                 await guild.system_channel.send(embed=embed)
+#             except:
+#                 await ctx.send(f"Message failed to sent to {guild.name}")
+#             else:
+#                 await ctx.send(f"Message successfully sent to {guild.name}.")
 def setup(bot):
     bot.add_cog(Administrative(bot))
