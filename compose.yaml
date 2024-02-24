@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  effectbot:
+    image: effectbot:0.1
+    container_name: effectbot
+    restart: unless-stopped
